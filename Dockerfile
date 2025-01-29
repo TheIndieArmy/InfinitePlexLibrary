@@ -1,22 +1,23 @@
-# Gebruik een lichte Node.js versie als basis
+# Use an official Node.js runtime as the base image
 FROM node:18-alpine
 
-# Stel de werkdirectory in
+# Set the working directory inside the container
 WORKDIR /app
 
-# Kopieer package.json en package-lock.json naar de container
+# Copy package.json and package-lock.json (or yarn.lock)
 COPY package*.json ./
 
-# Installeer de afhankelijkheden
+# Install dependencies
 RUN npm install
 
-RUN mkdir -p /.npm && chmod -R 777 /.npm
-
-# Kopieer de rest van de applicatiecode naar de container
+# Copy the rest of the application code
 COPY . .
 
-# Expose de poort die door het script wordt gebruikt
+# Build the TypeScript project
+RUN npm run build
+
+# Expose the port the app runs on
 EXPOSE 3000
 
-# Start het script
-CMD ["npm", "start"]
+# Command to run the application
+CMD ["node", "dist/index.js"]
